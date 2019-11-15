@@ -1,0 +1,56 @@
+{
+    "builders": [
+        {
+            "accelerator": "kvm",
+            "boot_command": [
+                "<tab> console=ttyS0 text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/centos-8.ks<enter><wait>"
+            ],
+            "boot_wait": "10s",
+            "disk_interface": "virtio",
+            "disk_size": 3072,
+            "format": "{{ user `format` }}",
+            "headless": true,
+            "http_directory": "http",
+            "iso_checksum": "a7993a0d4b7fef2433e0d4f53530b63c715d3aadbe91f152ee5c3621139a2cbc",
+            "iso_checksum_type": "sha256",
+            "iso_url": "http://mirror.cs.vt.edu/pub/CentOS/8/isos/x86_64/CentOS-8-x86_64-1905-boot.iso",
+            "net_device": "virtio-net",
+            "output_directory": "build",
+            "qemuargs": [
+                [
+                    "-monitor",
+                    "unix:qemu-monitor.sock,server,nowait"
+                ],
+                [
+                    "-serial",
+                    "pipe:/tmp/qemu-serial"
+                ],
+                [
+                    "-m",
+                    "896M"
+                ]
+            ],
+            "shutdown_command": "systemctl poweroff",
+            "ssh_password": "passwd",
+            "ssh_timeout": "10m",
+            "ssh_username": "root",
+            "type": "qemu",
+            "vm_name": "centos-8-stream-amd64-{{ timestamp }}.{{ user `format` }}"
+        }
+    ],
+    "post-processors": [
+        [
+            {
+                "s3_bucket_name": "{{ user `bucket_name` }}",
+                "tags": {
+                    "Description": "packer amazon-import"
+                },
+                "type": "amazon-import"
+            }
+        ]
+    ],
+    "variables": {
+        "format": "qcow2",
+        "bucket_name": "vm-import-bucket"
+    }
+}
