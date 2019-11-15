@@ -35,7 +35,7 @@
             "ssh_timeout": "10m",
             "ssh_username": "root",
             "type": "qemu",
-            "vm_name": "centos-8-stream-amd64-{{ timestamp }}.{{ user `format` }}"
+            "vm_name": "centos-8-amd64-{{ timestamp }}.{{ user `format` }}"
         }
     ],
     "post-processors": [
