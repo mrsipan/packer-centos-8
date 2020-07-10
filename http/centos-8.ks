@@ -1,4 +1,4 @@
-auth --enableshadow --passalgo=sha512
+authselect --enableshadow --passalgo=sha512
 bootloader --location=mbr --append="crashkernel=auto rhgb quiet"
 zerombr
 text
@@ -21,7 +21,10 @@ rootpw --iscrypted $1$redhat$pRYx4oykDgtMyJUbXmnC2.
 
 # partition code
 clearpart --all --initlabel
-part / --fstype="xfs" --size=1 --asprimary --grow
+part /boot/efi --label=efi --size=350 --fstype=efi
+part /boot --label=boot --size=500 --fstype="xfs" --asprimary
+part / --fstype="xfs" --size=1 --grow
+part swap --label=swap --recommended
 
 %packages --excludedocs --ignoremissing
 authconfig
